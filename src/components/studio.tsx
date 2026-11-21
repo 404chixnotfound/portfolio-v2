@@ -101,28 +101,41 @@ export function Studio({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   useEffect(() => {
-    const nodes = ["about", "work", "skills", "contact"]
-      .map((id) => document.getElementById(id))
-      .filter((node): node is HTMLElement => Boolean(node));
-    if (!nodes.length) {
-      setActive("");
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        const hit = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (hit?.target.id) setActive(hit.target.id);
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.2, 0.6] },
-    );
-    nodes.forEach((node) => io.observe(node));
-    return () => io.disconnect();
+    let io: IntersectionObserver | undefined;
+    let raf = 0;
+    let tries = 0;
+    const attach = () => {
+      const nodes = ["about", "work", "skills", "contact"]
+        .map((id) => document.getElementById(id))
+        .filter((node): node is HTMLElement => Boolean(node));
+      if (!nodes.length) {
+        setActive("");
+        // The new route may not be in the DOM yet; look again for a few frames.
+        if (tries++ < 30) raf = window.requestAnimationFrame(attach);
+        return;
+      }
+      io = new IntersectionObserver(
+        (entries) => {
+          const hit = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (hit?.target.id) setActive(hit.target.id);
+        },
+        { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.2, 0.6] },
+      );
+      nodes.forEach((node) => io?.observe(node));
+    };
+    attach();
+    return () => {
+      window.cancelAnimationFrame(raf);
+      io?.disconnect();
+    };
   }, [pathname]);
 
   useEffect(() => {
-    const nodes = document.querySelectorAll(".reveal");
+    // Route content can mount a frame after `pathname` changes, so a one-off
+    // querySelectorAll misses it and the page stays invisible until reload.
+    // Watch the DOM instead and pick up every .reveal as it appears.
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -134,13 +147,25 @@ export function Studio({ children }: { children: ReactNode }) {
       },
       { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
     );
-    nodes.forEach((node) => io.observe(node));
-    const fallback = window.setTimeout(() => nodes.forEach((node) => node.classList.add("in")), 1600);
-    return () => {
-      io.disconnect();
-      window.clearTimeout(fallback);
+    const seen = new WeakSet<Element>();
+    const timers: number[] = [];
+    const scan = () => {
+      document.querySelectorAll(".reveal:not(.in)").forEach((node) => {
+        if (seen.has(node)) return;
+        seen.add(node);
+        io.observe(node);
+        timers.push(window.setTimeout(() => node.classList.add("in"), 1600));
+      });
     };
-  }, [pathname]);
+    scan();
+    const mo = new MutationObserver(scan);
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      mo.disconnect();
+      io.disconnect();
+      timers.forEach((t) => window.clearTimeout(t));
+    };
+  }, []);
 
   useEffect(() => {
     const fmt = () =>

@@ -844,7 +844,8 @@ kbd {
 .back:hover { color: var(--ink); }
 .case-hero h1 {
   margin: 0.4rem 0 0;
-  font-size: clamp(3rem, 8vw, 6.4rem);
+  overflow-wrap: anywhere;
+  font-size: clamp(2.3rem, 9.5vw, 6.4rem);
   line-height: 0.9;
   letter-spacing: -0.05em;
   font-weight: 800;
@@ -936,9 +937,12 @@ kbd {
 .facade:active span { scale: 0.96; }
 .embed iframe { border: 0; position: absolute; inset: 0; }
 
-.case-grid { display: grid; gap: 2rem; padding-bottom: 4rem; }
+.case-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; padding-bottom: 4rem; }
+.case-grid > * { min-width: 0; }
+.case-grid p, .case-grid h3, .case-grid small, .case-side a, .case-side .text-btn, .chip, .swatch { overflow-wrap: anywhere; }
+.chip { max-width: 100%; }
 @media (min-width: 960px) {
-  .case-grid { grid-template-columns: 1.4fr 0.7fr; gap: 3rem; align-items: start; }
+  .case-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.7fr); gap: 3rem; align-items: start; }
   .case-side { position: sticky; top: calc(var(--nav-h) + 1.25rem); }
 }
 .block { margin: 0 0 2.2rem; }
@@ -1052,7 +1056,9 @@ kbd {
   opacity: 0.8;
 }
 .next-band strong {
-  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: clamp(1.8rem, 8.5vw, 4.2rem);
   letter-spacing: -0.045em;
   font-weight: 800;
   line-height: 0.95;
@@ -1163,7 +1169,7 @@ html.locked body { overflow: hidden; }
 html.jelly .page-enter { animation: jelly 0.48s var(--ease) 4; }
 
 @media (max-width: 700px) {
-  .ghost-index { opacity: 0.35; }
+  .ghost-index { opacity: 0.3; font-size: 5rem; top: 0.9rem; }
 }
 
 .js .reveal {
