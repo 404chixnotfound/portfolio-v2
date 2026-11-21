@@ -111,9 +111,13 @@ export function publicAppHost(hostHeader) {
  * app — Envoy rewrites it to `*.vercel.app`.
  */
 export function resolvePublicHost(hostHeader) {
-  return (
-    publicAppHost(process.env?.VITE_PUBLIC_HOSTNAME) || publicAppHost(hostHeader)
-  );
+  // A hostname set explicitly in the project env (e.g. your own *.vercel.app or
+  // custom domain) is trusted as-is, so share cards work on your own deploy.
+  const explicit = String(process.env?.VITE_PUBLIC_HOSTNAME ?? "")
+    .trim()
+    .toLowerCase();
+  if (/^[a-z0-9.-]+$/.test(explicit) && explicit.includes(".")) return explicit;
+  return publicAppHost(hostHeader);
 }
 
 export function isInstallQuery(url) {

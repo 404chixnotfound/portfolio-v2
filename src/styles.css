@@ -881,7 +881,7 @@ kbd {
   pointer-events: none;
 }
 
-.case-media { margin: 0.5rem 0 2.5rem; }
+.case-media { margin: 0.5rem auto 2.5rem; }
 .case-media .shot, .facade, .embed {
   width: 100%;
   background: var(--bg-2);
