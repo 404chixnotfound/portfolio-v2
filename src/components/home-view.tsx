@@ -61,7 +61,7 @@ export function HomeView() {
               </div>
               <div>
                 <dt>Focus</dt>
-                <dd>Game / app development</dd>
+                <dd>Game / web app development</dd>
               </div>
               <div>
                 <dt>Status</dt>
@@ -76,18 +76,17 @@ export function HomeView() {
           <div className="about-copy reveal">
             <p>I’m a software developer who treats code like both a tool and a canvas.</p>
             <p>
-              I build apps, games, and automation systems, whether they’re running on-chain, in a browser, or as a
-              software application.
+              I build web apps, games, and dapps, whether they run on-chain, in a browser, or as standalone software.
             </p>
             <p>
-              My work moves across game dev, UI architecture, cloud backends, and smart contracts. But the thread that
+              My work moves across frontend, game dev, UI architecture, DaaS, and smart contracts. But the thread that
               ties it all together is <em>renovation</em>: I take familiar systems, strip them down, and rebuild them
-              with fewer assumptions. Sometimes that means rewriting a game mechanic. Sometimes it means redesigning a
-              bot’s decision flow. Always it means making the thing clearer, faster, or more honest.
+              with fewer assumptions. Sometimes that means rewriting a game mechanic, or building a newer version of a
+              web app. Always it means making the thing clearer, faster, or more honest.
             </p>
             <p>
               I’m drawn to the indie ethos — small teams, strong visions, and work that doesn’t need a marketing budget
-              to be felt. I build things that quietly raise the bar.
+              to be felt.
             </p>
           </div>
         </div>
